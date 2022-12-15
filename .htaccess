@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+# That was ONLY to protect you from 500 errors
+# if your server did not have mod_rewrite enabled
+RewriteEngine On
+# RewriteBase /
+# NOT needed unless you're using mod_alias to redirect
+
+RewriteCond %{REQUEST_URI} /api
+RewriteRule ^api/(.+)$ api/index.php [L]
+
+RewriteCond %{REQUEST_URI} (.png|.jpg|.gif|.jpeg|.bmp|.js|.css|.ico)$
+RewriteCond %{REQUEST_URI} !dist
+RewriteRule ^(.+)$ dist/$1 [L]
+
+RewriteCond %{REQUEST_URI} !(.png|.jpg|.gif|.jpeg|.bmp|.js|.css|.ico)$
+RewriteRule ^(.*)$ dist/index.html [L]
+
+</IfModule>

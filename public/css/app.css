@@ -1,0 +1,39 @@
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root {
+    --large-text: 24px;
+    --big-text: 20px;
+    --medium-text: 18px;
+    --default-text: 16px;
+
+    --light-gray: #1F1F1F;
+
+}
+.wrapper {
+    padding: 20px;
+}
+.modal-container {
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    top: 0;
+}
+.modal-window {
+    display: flex;
+    flex-direction: column;
+    background: var(--light-gray);
+    border-radius: 20px;
+    width: 30%;
+    padding: 20px;
+}
