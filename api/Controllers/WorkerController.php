@@ -8,7 +8,7 @@ use Api\Exceptions\ForbiddenMethodException;
 use Api\Helpers\Auth;
 use Api\Services\DepartmentService;
 use Api\Services\WorkerService;
-use const Api\Models\ROLE_WORKER;
+use const ROLE_WORKER;
 
 final class WorkerController extends Controller
 {
@@ -16,6 +16,9 @@ final class WorkerController extends Controller
 
     protected function onGet(Request $request): Response
     {
+        if (!Auth::isUserType(ROLE_ADMIN)) {
+            throw new ForbiddenMethodException();
+        }
         $idDepartment = $request->getParam("idDepartment");
         return (new Response())->createSuccessResponse(
             DepartmentService::getAllWorkersOfDepartment($idDepartment)
@@ -26,6 +29,9 @@ final class WorkerController extends Controller
 
     protected function onPost(Request $request): Response
     {
+        if (!Auth::isUserType(ROLE_ADMIN)) {
+            throw new ForbiddenMethodException();
+        }
         $user = Auth::register(
             $request->getParam("login"),
             $request->getParam("password"),
@@ -36,7 +42,7 @@ final class WorkerController extends Controller
         return (new Response())->createSuccessResponse([
             "idWorker" => WorkerService::newWorker(
                 (int)$request->getParam("idDepartment"),
-                $user
+                $user->id
             )->id
         ]);
     }
@@ -53,6 +59,10 @@ final class WorkerController extends Controller
 
     protected function onDelete(Request $request): Response
     {
-        throw new ForbiddenMethodException();
+        if (!Auth::isUserType(ROLE_ADMIN)) {
+            throw new ForbiddenMethodException();
+        }
+        WorkerService::deleteWorker($request->getParam("idWorker"));
+        return Response::emptySuccessResponse();
     }
 }

@@ -1,7 +1,7 @@
 <?php
+
 namespace Api\Helpers;
 
-use Api\Core\Response;
 use Api\Exceptions\MainException;
 use Api\Exceptions\NotFoundException;
 use Api\Models\UserModel;
@@ -34,9 +34,11 @@ final class Auth
 
     public static function login(string $login, string $password): UserModel
     {
-        $password = password_hash($password, PASSWORD_BCRYPT);
         try {
-            $user = (new UserModel())->where("login", $login)->where("password", $password)->first();
+            $user = (new UserModel())->where("login", $login)->first();
+            if (!password_verify($password, $user->password)) {
+                throw new MainException("Неправильный логин или пароль", "$login $password");
+            }
             $_SESSION['idUser'] = $user->id;
             return $user;
         } catch (NotFoundException) {
@@ -50,11 +52,11 @@ final class Auth
             throw new MainException("Пользователь с таким логином уже существует", $login);
         }
 
-        $user = new UserModel();
-        $user->fio = $name;
-        $user->login = $login;
+        $user           = new UserModel();
+        $user->fio      = $name;
+        $user->login    = $login;
         $user->password = password_hash($password, PASSWORD_BCRYPT);
-        $user->type = $type;
+        $user->type     = $type;
         $user->save();
         $_SESSION["idUser"] = $user->id;
         return $user;

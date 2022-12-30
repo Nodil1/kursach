@@ -10,7 +10,10 @@ final class DepartmentModel extends Model
 
     public function workers(): array
     {
-        return (new WorkerModel())->where("id_department", $this->id)->get();
+        return (new WorkerModel())
+            ->where("id_department", $this->id)
+            ->whereIn("id", "SELECT users.id FROM users WHERE users.is_active = 1", false)
+            ->get();
     }
 
     public function safes(): array

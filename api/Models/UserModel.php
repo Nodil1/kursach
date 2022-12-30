@@ -13,8 +13,7 @@ final class UserModel extends Model
     public string $password;
     public string $fio;
     public int $type;
-    public \DateTime $createTime;
-    public ?\DateTime $removeTime;
+    public int $isActive = 1;
 
     public function worker(): WorkerModel
     {

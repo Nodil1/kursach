@@ -20,7 +20,7 @@ abstract class Model
     protected static string $tableName = "";
     protected string $whereQuery = "";
     protected string $orderQuery = "";
-    public int $id = 0;
+    public ?int $id = null;
 
     private static string $dataErrorMessage = "Ошибка при получении данных";
 
@@ -52,10 +52,23 @@ abstract class Model
     final public function where(string $name, int|float|string $value): static
     {
         $value = DB::quote($value);
-        if (empty($this->whereClause)) {
+        if (empty($this->whereQuery)) {
             $this->whereQuery .= "$name=$value";
         } else {
-            $this->whereQuery .= "AND $name=$value";
+            $this->whereQuery .= " AND $name=$value";
+        }
+        return $this;
+    }
+
+    final public function whereIn(string $name, string $value, bool $quote = true): static
+    {
+        if ($quote) {
+            $value = DB::quote($value);
+        }
+        if (empty($this->whereQuery)) {
+            $this->whereQuery .= "$name IN ($value)";
+        } else {
+            $this->whereQuery .= " AND $name IN ($value)";
         }
         return $this;
     }
@@ -74,8 +87,8 @@ abstract class Model
             return DB::getPDO()
                 ->query($sqlQuery)
                 ->fetchAll(PDO::FETCH_CLASS, get_class($this));
-        } catch (PDOException) {
-            throw new MainException(self::$dataErrorMessage, $sqlQuery);
+        } catch (PDOException $exception)  {
+            throw new MainException(self::$dataErrorMessage, $sqlQuery.$exception);
         }
     }
 
@@ -115,9 +128,9 @@ abstract class Model
     final public static function getById(int $id): static
     {
         try {
-            $sqlQuery = "SELECT * FROM self::tableName WHERE id = $id";
-            return (new static())
-                ->db
+            $table = static::$tableName;
+            $sqlQuery = "SELECT * FROM  $table WHERE id = $id";
+            return DB::getPDO()
                 ->query($sqlQuery)
                 ->fetchObject(static::class);
         } catch (PDOException) {
@@ -128,7 +141,9 @@ abstract class Model
     final public function save(): void
     {
         $props          = $this->getPublicProperties();
-        unset($props['id']);
+        if ($this->id === null){
+            unset($props['id']);
+        }
         $propertyNames  = implode(",", CaseConverter::stringArrayToSnakeCase($props));
         $propertyValues = implode(",", $this->quoteValues($props));
         $tableName      = static::$tableName;
@@ -138,8 +153,9 @@ abstract class Model
                 ->query($sqlQuery)
                 ->fetchObject(get_class($this));
             $this->id = (int)DB::getPDO()->lastInsertId();
-        } catch (PDOException) {
-            throw new MainException(self::$dataErrorMessage, $sqlQuery);
+        } catch (PDOException $exception) {
+
+            throw new MainException(self::$dataErrorMessage, $sqlQuery.$exception);
         }
     }
 

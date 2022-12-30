@@ -8,7 +8,7 @@ final class CaseConverter
 {
     public static function snakeCaseToCamelCase(string $input, string $separator = '_'): string
     {
-        return str_replace($separator, '', ucwords($input, $separator));
+        return lcfirst(str_replace($separator, '', ucwords($input, $separator)));
     }
 
     public static function camelCaseToSnakeCase(string $input): string

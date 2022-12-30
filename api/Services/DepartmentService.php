@@ -1,4 +1,5 @@
 <?php
+
 namespace Api\Services;
 
 use Api\Models\DepartmentModel;
@@ -35,7 +36,7 @@ final class DepartmentService
 
     public static function getFreeSafes(int $idDepartment): array
     {
-        $safes = DepartmentModel::getById($idDepartment)->safes();
+        $safes  = DepartmentModel::getById($idDepartment)->safes();
         $result = [];
         foreach ($safes as $safe) {
             if ($safe->idOwner === null) {
@@ -47,7 +48,9 @@ final class DepartmentService
 
     public static function getAllWorkersOfDepartment(int $idDepartment): array
     {
-        return DepartmentModel::getById($idDepartment)->workers();
+        return array_map(function ($obj) {
+            return $obj->fillInfo();
+        }, DepartmentModel::getById($idDepartment)->workers());
     }
 
     public static function getAllSafes(int $idDepartment): array

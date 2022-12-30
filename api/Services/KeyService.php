@@ -23,6 +23,11 @@ final class KeyService
 
     public static function issueKey(int $idKey): void
     {
+        $model = new KeyModel();
+        $model->idSafe = 0;
+        $model->isInBank = 0;
+        $model->save();
+        $model->where("id_safe", "123")->orderBy("ASK")->get();
         $key = KeyModel::getById($idKey);
         $key->isInBank = 0;
         $key->update();

@@ -22,7 +22,6 @@ final class Request
 
     public function getParam(string $paramName) : string
     {
-        print_r($this->params);
         return $this->params[$paramName];
     }
 
@@ -47,6 +46,9 @@ final class Request
     private function loadDeleteParams(): void
     {
         $this->type = "DELETE";
-        parse_str(file_get_contents("php://input"), $this->params);
+        $json = file_get_contents("php://input");
+        $this->params = json_decode($json, true);
+        print_r($this->params);
+
     }
 }

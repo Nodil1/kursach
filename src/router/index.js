@@ -1,17 +1,35 @@
 import { createWebHistory, createRouter } from "vue-router";
-import ClientLogin from "@/pages/ClientLogin.vue";
 import AdminPanel from "@/pages/AdminPanel";
+import WorkerPage from "@/pages/WorkerPage";
+import LoginPage from "@/pages/LoginPage";
 
 const routes = [
     {
         path: "/client/login",
         name: "ClientLogin",
-        component: ClientLogin,
+        component: LoginPage,
+    },
+    {
+        path: "/admin/login",
+        name: "AdminLogn",
+        component: LoginPage,
+        props: {type: 0}
+    },
+    {
+        path: "/worker/login",
+        name: "WorkerLogin",
+        component: LoginPage,
+        props: {type: 1}
     },
     {
         path: "/admin/panel",
         name: "AdminPanel",
         component: AdminPanel,
+    },
+    {
+        path: "/worker/panel",
+        name: "WorkerPage",
+        component: WorkerPage,
     },
 ];
 

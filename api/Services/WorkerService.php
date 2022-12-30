@@ -11,7 +11,7 @@ final class WorkerService
     public static function newWorker(int $idDepartment, int $idUser): WorkerModel
     {
         $newWorker               = new WorkerModel();
-        $newWorker->idUser       = $idUser;
+        $newWorker->id       = $idUser;
         $newWorker->idDepartment = $idDepartment;
         $newWorker->save();
         return $newWorker;
@@ -33,5 +33,12 @@ final class WorkerService
         $worker               = WorkerModel::getById($idWorker);
         $worker->idDepartment = $newIdDepartment;
         $worker->update();
+    }
+
+    public static function deleteWorker(int $idWorker){
+        $model = WorkerModel::getById($idWorker);
+        $user = $model->user();
+        $user->isActive = 0;
+        $user->update();
     }
 }

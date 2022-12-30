@@ -35,10 +35,13 @@ class DB
         return self::$pdo;
     }
 
-    public static function quote(int|float|string $value): int|float|string
+    public static function quote(null|int|float|string|\DateTime $value): null|int|float|string|\DateTime
     {
         if (is_string($value)) {
             return self::getPDO()->quote($value);
+        }
+        if ($value instanceof \DateTime){
+            return self::getPDO()->quote($value->format("Y-m-d H:i:s"));
         }
         return $value;
     }

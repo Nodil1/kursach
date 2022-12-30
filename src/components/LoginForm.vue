@@ -26,7 +26,7 @@ export default {
     },
     methods: {
         onLoginClick() {
-            alert(this.login + " " + this.password)
+            this.$emit("login", {login: this.login, password: this.password})
         },
         showPassword() {
             if (this.passwordInputType === "password") {

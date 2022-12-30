@@ -10,25 +10,25 @@ use Api\Helpers\Auth;
 use Api\Services\ClientService;
 use Api\Services\SafeService;
 use Api\Services\WorkerService;
-use const Api\Models\ROLE_CLIENT;
-use const Api\Models\ROLE_WORKER;
 
 final class SafeController extends Controller
 {
 
     protected function onGet(Request $request): Response
     {
+        if (Auth::isUserType(ROLE_WORKER)) {
+            return (new Response())->createSuccessResponse(
+                WorkerService::getAllowedSafes(Auth::getCurrentUser()->worker()->id)
+            );
+        }
+        
         if (Auth::isUserType(ROLE_CLIENT)) {
             return (new Response())->createSuccessResponse(
                 ClientService::getClientSafes(Auth::getCurrentUser()->client()->id)
             );
         }
 
-        if (Auth::isUserType(ROLE_WORKER)) {
-            return (new Response())->createSuccessResponse(
-                WorkerService::getAllowedSafes(Auth::getCurrentUser()->worker()->id)
-            );
-        }
+
 
         throw new ForbiddenMethodException();
     }
