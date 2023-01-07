@@ -23,6 +23,6 @@ final class WorkerModel extends Model
 
     public function department(): DepartmentModel
     {
-        return DepartmentModel::getById($this->id);
+        return DepartmentModel::getById($this->idDepartment);
     }
 }

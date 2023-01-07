@@ -16,18 +16,18 @@ final class SafeController extends Controller
 
     protected function onGet(Request $request): Response
     {
+
         if (Auth::isUserType(ROLE_WORKER)) {
             return (new Response())->createSuccessResponse(
                 WorkerService::getAllowedSafes(Auth::getCurrentUser()->worker()->id)
             );
         }
-        
+
         if (Auth::isUserType(ROLE_CLIENT)) {
             return (new Response())->createSuccessResponse(
                 ClientService::getClientSafes(Auth::getCurrentUser()->client()->id)
             );
         }
-
 
 
         throw new ForbiddenMethodException();
@@ -37,9 +37,13 @@ final class SafeController extends Controller
     protected function onPost(Request $request): Response
     {
         if (Auth::isUserType(ROLE_WORKER)) {
-            $idDepartment = (int)$request->getParam("idDepartment");
+            $price = (int)$request->getParam("price");
             return (new Response())->createSuccessResponse([
-                    "idNew" => SafeService::createSafe($idDepartment, Auth::getCurrentUser()->worker()->id)->id
+                    "idNew" => SafeService::createSafe(
+                        Auth::getCurrentUser()->worker()->idDepartment,
+                        Auth::getCurrentUser()->worker()->id,
+                        $price
+                    )->id
                 ]
             );
         }
@@ -60,7 +64,7 @@ final class SafeController extends Controller
     protected function onDelete(Request $request): Response
     {
         if (Auth::isUserType(ROLE_WORKER)) {
-            $idSafe      = (int)$request->getParam("idSafe");
+            $idSafe = (int)$request->getParam("idSafe");
             SafeService::deleteSafe($idSafe, Auth::getCurrentUser()->worker()->id);
             return (new Response())->createSuccessResponse([
                     "deleteId" => $idSafe

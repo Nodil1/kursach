@@ -17,6 +17,9 @@ session_start();
 $path = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $controller = match ($path) {
     "department" => new DepartmentController(),
+    "safe" => new \Api\Controllers\SafeController(),
+    "key" => new \Api\Controllers\KeyController(),
+    "client" => new \Api\Controllers\ClientController(),
     "worker" => new WorkerController(),
     "auth" => new AuthController()
 };

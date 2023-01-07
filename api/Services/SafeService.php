@@ -10,23 +10,23 @@ use Api\Models\WorkerModel;
 
 final class SafeService
 {
-    public static function createSafe(int $idDepartment, int $idWorker): SafeModel
+    public static function createSafe(int $idDepartment, int $idWorker, int $price): SafeModel
     {
         $workerModel = WorkerModel::getById($idWorker);
         if ($workerModel->idDepartment != $idDepartment) {
-            throw new PermissionDeniedException($workerModel->idDepartment." ".$idDepartment);
+            throw new PermissionDeniedException($workerModel->idDepartment . " " . $idDepartment);
         }
 
-        $safe               = new SafeModel();
-        $safe->idOwner      = null;
+        $safe = new SafeModel();
         $safe->idDepartment = $idDepartment;
+        $safe->price = $price;
         $safe->save();
         return $safe;
     }
 
     public static function deleteSafe(int $idSafe, int $idWorker): void
     {
-        $safeModel   = SafeModel::getById($idSafe);
+        $safeModel = SafeModel::getById($idSafe);
         $workerModel = WorkerModel::getById($idWorker);
         if ($safeModel->idDepartment !== $workerModel->idDepartment) {
             throw new PermissionDeniedException("Safe $safeModel->idDepartment Worker $workerModel->idDepartment");
@@ -43,7 +43,7 @@ final class SafeService
 
     public static function rentSafe(int $idSafe, int $idClient): void
     {
-        $safe          = SafeModel::getById($idSafe);
+        $safe = SafeModel::getById($idSafe);
         if (!self::isSafeFree($idSafe)) {
             throw new MainException("Сейф не доступен для аренды", "Safe $idSafe, Client $idClient");
         }
@@ -53,7 +53,7 @@ final class SafeService
 
     public static function unRentSafe(int $idSafe, int $idClient): void
     {
-        $safe        = SafeModel::getById($idSafe);
+        $safe = SafeModel::getById($idSafe);
 
         if ($idClient !== $safe->idOwner) {
             throw new MainException("Вы не владеете этим сейфом", "Safe $idSafe, Client $idClient");

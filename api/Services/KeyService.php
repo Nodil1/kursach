@@ -1,4 +1,5 @@
 <?php
+
 namespace Api\Services;
 
 use Api\Exceptions\NotFoundException;
@@ -14,11 +15,16 @@ final class KeyService
             throw new NotFoundException("Сейф не найден", "Safe $idSafe");
         }
 
-        $key           = new KeyModel();
-        $key->idSafe   = $idSafe;
+        $key = new KeyModel();
+        $key->idSafe = $idSafe;
         $key->isInBank = 1;
         $key->save();
         return $key;
+    }
+
+    public static function getKeys(int $idSafe): array
+    {
+        return SafeModel::getById($idSafe)->keys();
     }
 
     public static function issueKey(int $idKey): void
@@ -39,4 +45,22 @@ final class KeyService
         $key->isInBank = 1;
         $key->update();
     }
+
+    public static function changeState(int $idKey): void
+    {
+        $key = KeyModel::getById($idKey);
+        if ($key->isInBank === 0) {
+            $key->isInBank = 1;
+        } else {
+            $key->isInBank = 0;
+        }
+        $key->update();
+    }
+
+    public static function deleteKey(int $idKey)
+    {
+        $key = KeyModel::getById($idKey);
+        $key->delete();
+    }
+
 }

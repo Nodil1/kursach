@@ -31,6 +31,7 @@ final class Response
 
     public function createErrorResponse(MainException $error): self
     {
+        http_response_code(400);
         try {
             $this->response = json_encode([
                 "status" => "error",

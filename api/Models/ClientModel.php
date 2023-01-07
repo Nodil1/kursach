@@ -7,7 +7,6 @@ final class ClientModel extends Model
 {
 
     protected static string $tableName = "clients";
-    public int $idUser;
     public int $passport;
     public int $balance;
 

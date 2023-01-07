@@ -6,7 +6,6 @@ use Api\Core\Model;
 final class SafeModel extends Model
 {
     protected static string $tableName = "safes";
-    public ?string $idOwner;
     public string $idDepartment;
     public int $price;
 

@@ -275,3 +275,8 @@ textarea:focus, input:focus {
     transition-duration: 300ms;
     color: var(--semi-gray);
 }
+
+i:hover {
+    transition-duration: 300ms;
+    color: var(--semi-gray);
+}

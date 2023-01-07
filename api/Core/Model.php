@@ -82,7 +82,7 @@ abstract class Model
     final public function get(): array
     {
         try {
-            $tableName = static::$tableName;
+            $tableName = '`'.static::$tableName.'`';
             $sqlQuery  = "SELECT * from $tableName WHERE $this->whereQuery $this->orderQuery";
             return DB::getPDO()
                 ->query($sqlQuery)
@@ -115,7 +115,7 @@ abstract class Model
     final public static function getAll(): array
     {
         try {
-            $name     = static::$tableName;
+            $name     = '`'.static::$tableName.'`';
             $sqlQuery = "SELECT * from $name";
             return DB::getPDO()
                 ->query($sqlQuery)
@@ -128,7 +128,7 @@ abstract class Model
     final public static function getById(int $id): static
     {
         try {
-            $table = static::$tableName;
+            $table = '`'.static::$tableName.'`';
             $sqlQuery = "SELECT * FROM  $table WHERE id = $id";
             return DB::getPDO()
                 ->query($sqlQuery)
@@ -146,7 +146,7 @@ abstract class Model
         }
         $propertyNames  = implode(",", CaseConverter::stringArrayToSnakeCase($props));
         $propertyValues = implode(",", $this->quoteValues($props));
-        $tableName      = static::$tableName;
+        $tableName      = '`'.static::$tableName.'`';
         $sqlQuery       = "INSERT INTO $tableName ($propertyNames) VALUES ($propertyValues)";
         try {
             DB::getPDO()
@@ -163,7 +163,7 @@ abstract class Model
     {
         $props        = $this->getPublicProperties();
         $updateString = $this->createUpdateString($props);
-        $tableName    = static::$tableName;
+        $tableName    = DB::getPDO()->quote(static::$tableName);
         $sqlQuery     = "UPDATE $tableName SET $updateString WHERE id = $this->id";
         try {
             DB::getPDO()
@@ -175,7 +175,7 @@ abstract class Model
 
     final public function delete(): void
     {
-        $tableName = static::$tableName;
+        $tableName = '`'.static::$tableName.'`';
         if (empty($this->orderQuery)) {
             $sqlQuery = "DELETE FROM $tableName WHERE id = $this->id";
         } else {
